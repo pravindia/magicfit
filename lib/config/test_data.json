@@ -1,0 +1,16 @@
+{
+    "name": "Pravin",
+    "date": "true",
+    "sets": [
+      {
+        "weight": 30,
+        "reps": 12,
+        "exercise": "Barbell row"
+      },
+      {
+        "weight": 8,
+        "reps": 40,
+        "exercise": "Barbell row"
+      }
+    ]
+  }
