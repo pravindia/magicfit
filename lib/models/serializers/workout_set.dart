@@ -34,4 +34,6 @@ enum ExerciseType {
 
   const ExerciseType(this.value);
   final String value;
+  static List<String> stringValues() =>
+      ExerciseType.values.map((e) => e.name).toList();
 }

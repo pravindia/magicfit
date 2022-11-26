@@ -1,7 +1,9 @@
 import 'package:app/models/workout_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
+import '../components/empty_state.dart';
 import '../config/constants.dart';
 import '../models/serializers/workout.dart';
 import 'workout_page.dart';
@@ -14,44 +16,20 @@ class WorkoutList extends StatefulWidget {
 }
 
 class _WorkoutListState extends State<WorkoutList> {
-  List<Workout> workoutlist = [];
-  final WorkoutModel _model = WorkoutModel();
-
   TextEditingController nameController = TextEditingController();
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () async {
-      await loadData();
-    });
     super.initState();
-  }
-
-  loadData() async {
-    // mockdata
-    try {} catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Failed to load data"),
-      ));
-    }
-    await _model.loadWorkout();
-    if (mounted) {
-      setState(() {
-        workoutlist = _model.getWorkoutList;
-      });
-    }
   }
 
   createWorkout() async {
     // Validation
     try {
       if (nameController.text.isNotEmpty) {
-        Workout newWorkout = await _model.addNewWorkout(nameController.text);
-        if (mounted) {
-          setState(() {
-            workoutlist = _model.getWorkoutList;
-          });
-        }
+        await Provider.of<WorkoutModel>(context, listen: false)
+            .addNewWorkout(nameController.text);
+        nameController.text = '';
       } else {
         //  Error Message
       }
@@ -106,8 +84,8 @@ class _WorkoutListState extends State<WorkoutList> {
     );
   }
 
-  String formatDat(DateTime? date) {
-    return (date != null) ? DateFormat('yyyy-MM-dd').format(date) : '';
+  String formatDate(DateTime? date) {
+    return (date != null) ? DateFormat('dd MMM').format(date) : '';
   }
 
   @override
@@ -128,32 +106,38 @@ class _WorkoutListState extends State<WorkoutList> {
         onPressed: createnewDialog,
         child: const Icon(Icons.add),
       ),
-      body: ListView.separated(
-          separatorBuilder: (context, index) => const SizedBox(height: 10),
-          itemCount: workoutlist.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              enableFeedback: true,
-              leading: const Icon(Icons.fitness_center, size: 28),
-              minLeadingWidth: 10,
-              key: ValueKey('workout$index'),
-              trailing: Text(
-                '${workoutlist[index].sets.length} Sets',
-                style: const TextStyle(color: Colors.green),
-              ),
-              subtitle: Text(formatDat(workoutlist[index].date)),
-              title: Text("${workoutlist[index].name}"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        WorkoutPage(workout: workoutlist[index]),
-                  ),
-                );
-              },
-            );
-          }),
+      body: Consumer<WorkoutModel>(builder: (context, WorkoutModel data, __) {
+        return ListView.separated(
+            separatorBuilder: (context, index) => const SizedBox(height: 10),
+            itemCount: data.getWorkoutList.length,
+            itemBuilder: (BuildContext context, int index) {
+              if (data.getWorkoutList.isEmpty) return const EmptyState();
+              return ListTile(
+                enableFeedback: true,
+                leading: const Icon(Icons.fitness_center, size: 28),
+                minLeadingWidth: 10,
+                key: ValueKey('workout$index'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () async {
+                    await data.deleteWorkout(data.getWorkoutList[index]);
+                  },
+                ),
+                title: Text("${data.getWorkoutList[index].name}"),
+                subtitle: Text(
+                    '${data.getWorkoutList[index].sets.length} Sets on ${formatDate(data.getWorkoutList[index].date)}'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          WorkoutPage(workout: data.getWorkoutList[index]),
+                    ),
+                  );
+                },
+              );
+            });
+      }),
     );
   }
 }
