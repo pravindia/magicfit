@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../config/constants.dart';
-import '../config/mock_data.dart';
 import '../models/serializers/workout.dart';
 import 'workout_page.dart';
 
@@ -18,7 +17,7 @@ class _WorkoutListState extends State<WorkoutList> {
   List<Workout> workoutlist = [];
   final WorkoutModel _model = WorkoutModel();
 
-  TextEditingController name = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   @override
   void initState() {
@@ -30,6 +29,11 @@ class _WorkoutListState extends State<WorkoutList> {
 
   loadData() async {
     // mockdata
+    try {} catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Failed to load data"),
+      ));
+    }
     await _model.loadWorkout();
     if (mounted) {
       setState(() {
@@ -41,8 +45,8 @@ class _WorkoutListState extends State<WorkoutList> {
   createWorkout() async {
     // Validation
     try {
-      if (name.text.isNotEmpty) {
-        Workout newWorkout = await _model.addNewWorkout(name.text);
+      if (nameController.text.isNotEmpty) {
+        Workout newWorkout = await _model.addNewWorkout(nameController.text);
         if (mounted) {
           setState(() {
             workoutlist = _model.getWorkoutList;
@@ -76,18 +80,19 @@ class _WorkoutListState extends State<WorkoutList> {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 TextField(
-                  key: addworkoutTextkey,
+                  key: kaddworkoutTextkey,
                   autofocus: true,
-                  controller: name,
+                  controller: nameController,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
+                  key: kaddWorkoutSubmitButton,
                   style: const ButtonStyle(
                     padding: MaterialStatePropertyAll(
                         EdgeInsets.symmetric(horizontal: 30, vertical: 10)),
                   ),
                   onPressed: () async {
-                    FocusManager.instance.primaryFocus?.unfocus();
+                    // if (mounted) FocusManager.instance.primaryFocus?.unfocus();
                     await createWorkout();
                     Navigator.of(context).maybePop();
                   },
@@ -106,6 +111,12 @@ class _WorkoutListState extends State<WorkoutList> {
   }
 
   @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -113,6 +124,7 @@ class _WorkoutListState extends State<WorkoutList> {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
+        key: kaddNewWorkoutButton,
         onPressed: createnewDialog,
         child: const Icon(Icons.add),
       ),

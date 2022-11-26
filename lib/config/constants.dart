@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-const ValueKey addworkoutTextkey = ValueKey('addworkoutTextkey');
-const String addHeroTag = 'listhero';
+const Key kaddNewWorkoutButton = Key('addNewWorkoutButton');
+const Key kaddHeroTag = Key('addHeroTag');
+const ValueKey kaddworkoutTextkey = ValueKey('addworkoutTextkey');
+const Key kaddWorkoutSubmitButton = Key('addWorkoutSubmitButton');
 
-const String workoutStorageKey = 'workout_data';
+const String workoutStorageKey = 'workoutStorageKey';
