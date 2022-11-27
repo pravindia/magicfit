@@ -35,7 +35,9 @@ class _WorkoutPageState extends State<WorkoutPage> {
   Future<bool> createWorkoutSet() async {
     if (nameController.text.isNotEmpty &&
         weightController.text.isNotEmpty &&
-        repsController.text.isNotEmpty) {
+        repsController.text.isNotEmpty &&
+        int.tryParse(weightController.text) != null &&
+        int.tryParse(repsController.text) != null) {
       try {
         var json = {
           'exercise': nameController.text,

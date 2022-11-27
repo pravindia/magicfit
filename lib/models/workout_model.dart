@@ -21,8 +21,8 @@ class WorkoutModel extends ChangeNotifier {
     try {
       final ready = await storage.ready;
       if (ready) {
-        var json = _workout.map((e) => e.toJson()).toList();
-        var arr = jsonEncode(json);
+        var jsonMap = _workout.map((e) => e.toJson()).toList();
+        var arr = jsonEncode(jsonMap);
         await storage.setItem(workoutStorageKey, arr);
       }
     } catch (e) {
@@ -34,9 +34,9 @@ class WorkoutModel extends ChangeNotifier {
     try {
       final ready = await storage.ready;
       if (ready) {
-        final json = await storage.getItem(workoutStorageKey);
+        final jsonMap = await storage.getItem(workoutStorageKey);
         var items;
-        if (json != null) items = jsonDecode(json);
+        if (jsonMap != null) items = jsonDecode(jsonMap);
         if (items != null) {
           for (var item in items) {
             _workout.add(Workout.fromJson(item));

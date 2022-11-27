@@ -21,7 +21,7 @@ class WorkoutSet {
   Map<String, dynamic> toJson() => _$WorkoutSetToJson(this);
 
   static int _stringToInt(number) =>
-      number != null ? int.parse(number.toString()) : 0;
+      (number != null) ? int.tryParse(number.toString()) ?? 0 : 0;
 }
 
 @JsonEnum(valueField: 'value')
