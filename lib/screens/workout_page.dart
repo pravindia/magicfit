@@ -1,6 +1,4 @@
-import 'package:app/screens/workout_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../components/empty_state.dart';
@@ -29,6 +27,9 @@ class _WorkoutPageState extends State<WorkoutPage> {
 
   @override
   void dispose() {
+    nameController.dispose();
+    weightController.dispose();
+    repsController.dispose();
     super.dispose();
   }
 
