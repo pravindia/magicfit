@@ -7,7 +7,7 @@ import '../config/constants.dart';
 import './serializers/workout.dart';
 import './serializers/workout_set.dart';
 
-class WorkoutModel with ChangeNotifier {
+class WorkoutModel extends ChangeNotifier {
   final LocalStorage storage = LocalStorage(workoutStorageKey);
 
   final List<Workout> _workout = [];
@@ -54,7 +54,7 @@ class WorkoutModel with ChangeNotifier {
     await saveWorkout();
   }
 
-  Future addNewWorkout(String name) async {
+  addNewWorkout(String name) async {
     int nextid = _workout.isNotEmpty
         ? _workout.reduce((v, e) => (v.id > e.id) ? v : e).id + 1
         : 0;

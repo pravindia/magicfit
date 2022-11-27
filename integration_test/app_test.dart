@@ -16,8 +16,11 @@ void main() {
       final Finder addNameTextField = find.byKey(kaddworkoutTextkey);
       final Finder addWorkoutSubmit = find.byKey(kaddWorkoutSubmitButton);
 
-      final Finder lists = find.byType(ListTile);
-      final listCount = tester.widgetList(lists);
+      final lists = find.byType(ListTile);
+      int listCount = 0;
+      if (lists != null) {
+        listCount = tester.widgetList(lists).length;
+      }
       // Future.delayed(Duration(seconds: 2));
       await tester.pumpAndSettle();
       expect(
@@ -36,9 +39,9 @@ void main() {
 
       await tester.tap(addWorkoutSubmit);
       await tester.pumpAndSettle();
-      expect(find.text('AUto text'), findsOneWidget);
-      expect(tester.widgetList(find.byType(ListTile)),
-          findsNWidgets(listCount.length + 1));
+
+      expect(find.text('AUto text'), findsAtLeastNWidgets(1));
+      expect(find.byType(ListTile), findsAtLeastNWidgets(listCount));
 
       printOnFailure("Test Failed");
     });

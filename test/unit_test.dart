@@ -1,5 +1,6 @@
 import 'package:app/models/serializers/workout.dart';
 import 'package:app/models/serializers/workout_set.dart';
+import 'package:app/models/workout_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
